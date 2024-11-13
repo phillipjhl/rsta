@@ -1,3 +1,3 @@
-module github.com/phillipjhl/racing_sim_telemetry
+module github.com/phillipjhl/rsta
 
 go 1.23.3
