@@ -1,12 +1,13 @@
 package main
 
 import (
-	"time"
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"log"
 	"net"
 	"os"
+	"time"
 )
 
 type PacketHeader struct {
@@ -75,7 +76,7 @@ func main() {
 	filename := fmt.Sprintf("%d_udp_telemetry_raw.log", timestamp)
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Printf("Could not open file: %v", err)
+		log.Fatalf("Could not open file: %v", err)
 	}
 	defer file.Close()
 
@@ -98,13 +99,13 @@ func main() {
 	// Allocate buffer for each packet
 	buffer := make([]byte, 2048)
 	for {
-		rlen, remote, err := ln.ReadFromUDP(buffer)
+		rlen, _, err := ln.ReadFromUDP(buffer)
 
 		if err != nil {
 			fmt.Printf("Error reading from UDP: %f", err)
 			continue
 		}
-		fmt.Printf("Data In. len: %v, addr: %v\n", rlen, remote)
+		// fmt.Printf("Data In. len: %v, addr: %v\n", rlen, remote)
 
 		// Read only the length of the buffer
 		data := buffer[:rlen]
@@ -120,9 +121,6 @@ func main() {
 			fmt.Printf("Could not read packet: %v \n", err)
 		}
 
-		fmt.Printf("Header: %v \n", header)
-		// fmt.Printf("WorldPostionX: %v \n", packet.CarMotionData.WorldPositionX)
-		// fmt.Printf("WorldPostionY: %v \n", packet.CarMotionData.WorldPositionY)
+		// fmt.Printf("Header: %v \n", header)
 	}
-
 }
